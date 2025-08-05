@@ -41,19 +41,24 @@ class ExerciseActivity : AppCompatActivity(), NoteClickInterface, NoteClickDelet
 
         // on below line we are
         // initializing our view modal.
-        viewModal = ViewModelProvider(
-            this,
-            ViewModelProvider.AndroidViewModelFactory.getInstance(application)
-        ).get(ExerciseViewModal::class.java)
+        viewModal =
+                ViewModelProvider(
+                                this,
+                                ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+                        )
+                        .get(ExerciseViewModal::class.java)
 
         // on below line we are calling all notes method
         // from our view modal class to observer the changes on list.
-        viewModal.allNotes.observe(this, Observer { list ->
-            list?.let {
-                // on below line we are updating our list.
-                noteRVAdapter.updateList(it)
-            }
-        })
+        viewModal.allNotes.observe(
+                this,
+                Observer { list ->
+                    list?.let {
+                        // on below line we are updating our list.
+                        noteRVAdapter.updateList(it)
+                    }
+                }
+        )
         addFAB.setOnClickListener {
             // adding a click listener for fab button
             // and opening a new intent to add a new note.
@@ -68,7 +73,7 @@ class ExerciseActivity : AppCompatActivity(), NoteClickInterface, NoteClickDelet
         val intent = Intent(this@ExerciseActivity, AddEditExecActivity::class.java)
 
         intent.putExtra("noteType", "Edit")
-        intent.putExtra("noteTitle", exer.activity_Name)
+        intent.putExtra("noteTitle", exer.activity_name)
         intent.putExtra("Metric1", exer.metric_one)
         intent.putExtra("Metric2", exer.metric_two)
         intent.putExtra("totalCal", exer.cal_burned)
@@ -82,6 +87,6 @@ class ExerciseActivity : AppCompatActivity(), NoteClickInterface, NoteClickDelet
         // method from our view modal to delete our not.
         viewModal.deleteNote(note)
         // displaying a toast message
-        Toast.makeText(this, "${note.activity_Name} Deleted", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "${note.activity_name} Deleted", Toast.LENGTH_LONG).show()
     }
 }

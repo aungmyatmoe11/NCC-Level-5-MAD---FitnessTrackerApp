@@ -1,6 +1,5 @@
 package com.example.fitnesstrackingmobileapp
 
-
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -18,25 +17,27 @@ class AddEditExecActivity : AppCompatActivity() {
     lateinit var noteTitleEdt: EditText
     lateinit var noteEdt: EditText
     lateinit var noteEdt1: EditText
-    lateinit  var totalCal: EditText
-    var calburned:Double = 0.0
+    lateinit var totalCal: EditText
+    var calburned: Double = 0.0
 
     lateinit var saveBtn: Button
 
     // on below line we are creating variable for
     // viewmodal and integer for our note id.
     lateinit var viewModal: ExerciseViewModal
-    var noteID = -1;
+    var noteID = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_edit_note)
 
         // on below line we are initializing our view modal.
-        viewModal = ViewModelProvider(
-            this,
-            ViewModelProvider.AndroidViewModelFactory.getInstance(application)
-        ).get(ExerciseViewModal::class.java)
+        viewModal =
+                ViewModelProvider(
+                                this,
+                                ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+                        )
+                        .get(ExerciseViewModal::class.java)
 
         // on below line we are initializing all our variables.
         noteTitleEdt = findViewById(R.id.idActivityName)
@@ -49,7 +50,7 @@ class AddEditExecActivity : AppCompatActivity() {
         val noteType = intent.getStringExtra("noteType")
         if (noteType.equals("Edit")) {
             // on below line we are setting data to edit text.
-            val noteTitle = intent.getStringExtra("activity_Name")
+            val noteTitle = intent.getStringExtra("activity_name")
             val metric1 = intent.getStringExtra("metric_one")
             val metric2 = intent.getStringExtra("metric_two")
             noteID = intent.getIntExtra("noteId", -1)
@@ -68,16 +69,18 @@ class AddEditExecActivity : AppCompatActivity() {
             // title and desc from edit text.
             val noteTitle = noteTitleEdt.text.toString()
             val noteDescription = noteEdt.text.toString()
-            val metric1 =noteEdt.text.toString().toDouble()
-            val metric2 =noteEdt1.text.toString().toDouble()
-            calburned = noteEdt.text.toString().toDouble() * noteEdt1.text.toString().toDouble() * 0.3
+            val metric1 = noteEdt.text.toString().toDouble()
+            val metric2 = noteEdt1.text.toString().toDouble()
+            calburned =
+                    noteEdt.text.toString().toDouble() * noteEdt1.text.toString().toDouble() * 0.3
             // on below line we are checking the type
             // and then saving or updating the data.
             if (noteType.equals("Edit")) {
                 if (noteTitle.isNotEmpty() && noteDescription.isNotEmpty()) {
                     val sdf = SimpleDateFormat("dd MMM, yyyy - HH:mm")
                     val currentDateAndTime: String = sdf.format(Date())
-                    val updatedNote = Exercise(noteTitle, metric1 ,metric2,calburned, currentDateAndTime)
+                    val updatedNote =
+                            Exercise(noteTitle, metric1, metric2, calburned, currentDateAndTime)
                     updatedNote.id = noteID
                     viewModal.updateNote(updatedNote)
                     Toast.makeText(this, "Note Updated..", Toast.LENGTH_LONG).show()
@@ -88,7 +91,9 @@ class AddEditExecActivity : AppCompatActivity() {
                     val currentDateAndTime: String = sdf.format(Date())
                     // if the string is not empty we are calling a
                     // add note method to add data to our room database.
-                    viewModal.addNote(Exercise(noteTitle, metric1, metric2,calburned,currentDateAndTime))
+                    viewModal.addNote(
+                            Exercise(noteTitle, metric1, metric2, calburned, currentDateAndTime)
+                    )
                     Toast.makeText(this, "$noteTitle Added", Toast.LENGTH_LONG).show()
                 }
             }

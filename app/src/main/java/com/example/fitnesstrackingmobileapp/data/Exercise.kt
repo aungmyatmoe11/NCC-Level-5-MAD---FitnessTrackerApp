@@ -4,9 +4,9 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "exerciseTable")
+@Entity(tableName = "exercise_table")
 class Exercise(
-        @ColumnInfo(name = "title") val activity_Name: String,
+        @ColumnInfo(name = "title") val activity_name: String,
         @ColumnInfo(name = "metric1") val metric_one: Double,
         @ColumnInfo(name = "metric2") val metric_two: Double,
         @ColumnInfo(name = "calburned") val cal_burned: Double,

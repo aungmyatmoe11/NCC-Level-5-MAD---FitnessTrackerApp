@@ -1,4 +1,5 @@
 package com.example.fitnesstrackingmobileapp
+
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -9,10 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnesstrackingmobileapp.data.Exercise
 
 class ExerciseRVAdapter(
-    val context: Context,
-    val noteClickDeleteInterface: NoteClickDeleteInterface,
-    val noteClickInterface: NoteClickInterface
-) :    RecyclerView.Adapter<ExerciseRVAdapter.ViewHolder>() {
+        val context: Context,
+        val noteClickDeleteInterface: NoteClickDeleteInterface,
+        val noteClickInterface: NoteClickInterface
+) : RecyclerView.Adapter<ExerciseRVAdapter.ViewHolder>() {
 
     // on below line we are creating a
     // variable for our all notes list.
@@ -32,21 +33,21 @@ class ExerciseRVAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         // inflating our layout file for each item of recycler view.
-        val itemView = LayoutInflater.from(parent.context).inflate(
-            R.layout.note_rv_item,
-            parent, false
-        )
+        val itemView =
+                LayoutInflater.from(parent.context).inflate(R.layout.note_rv_item, parent, false)
         return ViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         // on below line we are setting data to item of recycler view.
 
-        holder.noteTV.setText(allNotes.get(position).activity_Name )
-      //  if(allNotes.get(position).activity_Name.equals("Running")){
-        holder.metric1.setText("Metric 1 :" + allNotes.get(position).metric_one .toString())
-        holder.metric2.setText("Metric 2 : " +allNotes.get(position).metric_two .toString())
-        holder.idCalburned.setText("Calories Burned: "+allNotes.get(position).cal_burned .toString())
+        holder.noteTV.setText(allNotes.get(position).activity_name)
+        //  if(allNotes.get(position).activity_name.equals("Running")){
+        holder.metric1.setText("Metric 1 :" + allNotes.get(position).metric_one.toString())
+        holder.metric2.setText("Metric 2 : " + allNotes.get(position).metric_two.toString())
+        holder.idCalburned.setText(
+                "Calories Burned: " + allNotes.get(position).cal_burned.toString()
+        )
         holder.dateTV.setText("Last Updated : " + allNotes.get(position).timeStamp)
 
         // on below line we are adding click listener to our delete image view icon.

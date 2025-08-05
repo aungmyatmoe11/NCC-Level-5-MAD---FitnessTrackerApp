@@ -1,23 +1,73 @@
 <resources>
     <string name="app_name">Fitness Tracking Mobile App</string>
-    <!-- Strings used for fragments for navigation -->
+    
+    <!-- Login Screen -->
+    <string name="welcome_title">Welcome to Fitness Tracker</string>
+    <string name="login_subtitle">Sign in to continue tracking your fitness journey</string>
+    <string name="username_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <string name="sign_in">Sign In</string>
+    <string name="create_account">Create Account</string>
+    <string name="login_help_text">Don\'t have an account? Choose \'Create Account\' to sign up.</string>
+    <string name="app_logo_description">Fitness Tracker App Logo</string>
+    
+    <!-- Register Screen -->
+    <string name="create_account_title">Create Account</string>
+    <string name="create_account_subtitle">Join us to start your fitness journey</string>
+    <string name="email_hint">Email</string>
+    <string name="register_help_text">Already have an account? Sign in to continue.</string>
+    
+    <!-- Home Screen -->
+    <string name="home_title">Fitness Tracker</string>
+    <string name="home_subtitle">Track your workouts and stay healthy</string>
+    <string name="workout_label">Workout</string>
+    <string name="exercises_label">Exercises</string>
+    <string name="tasks_label">Tasks</string>
+    <string name="settings_label">Settings</string>
+    <string name="location_label">Location</string>
+    <string name="cycling_label">Cycling</string>
+    <string name="routines_label">Routines</string>
+    <string name="profile_label">Profile</string>
+    
+    <!-- Activity Labels -->
+    <string name="walking_label">Walking</string>
+    <string name="running_label">Running</string>
+    <string name="custom_activities_label">Custom Activities</string>
+    <string name="choose_activities_label">Choose Other Activities</string>
+    <string name="set_calories_label">Set Calories</string>
+    <string name="reset_goal_label">Reset Goal</string>
+    <string name="calorie_goal_hint">Enter Your Goal (Calorie Burned)</string>
+    
+    <!-- Activity Tracker -->
+    <string name="activity_tracker_title">Activity Tracker</string>
+    <string name="activity_tracker_subtitle">Track your daily activities and set fitness goals</string>
+    <string name="calorie_goal_title">Calorie Goal</string>
+    <string name="calorie_goal_description">Set your daily calorie burn goal to stay motivated and track your progress</string>
+    
+    <!-- Navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
-
-    <string name="settings_button">Settings Button</string>
     <string name="previous">Previous</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    
+    <!-- Settings -->
+    <string name="settings_button">Settings Button</string>
+    <string name="action_settings">Settings</string>
+    <string name="reset_goal">Reset Goal</string>
+    
+    <!-- Navigation Drawer -->
     <string name="title_activity_navigation_drawer">NavigationDrawerActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
-    <string name="open">Open</string>
-    <string name="close">Close</string>
-    <string name="reset_goal">Reset Goal</string>
-
+    
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
@@ -54,6 +104,4 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

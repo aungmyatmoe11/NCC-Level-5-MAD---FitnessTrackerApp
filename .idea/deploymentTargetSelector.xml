@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="Fitness_Tracking_Mobile_App">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-05-20T17:20:12.310442400Z">
+        <DropdownSelection timestamp="2025-08-05T11:52:26.873803Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\User\.android\avd\Pixel_2_XL_API_34.avd" />
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=13195704C9004362" />
             </handle>
           </Target>
         </DropdownSelection>
