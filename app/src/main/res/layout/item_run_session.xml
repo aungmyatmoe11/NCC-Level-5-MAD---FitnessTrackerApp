@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#FFF0F5"
+    android:padding="8dp">
+
+    <!-- Display run session start time -->
+    <TextView
+        android:id="@+id/startTimeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start Time: 12:00 PM"
+        android:textColor="#DA70D6"
+        android:textSize="16sp" />
+
+    <!-- Display run session end time -->
+    <TextView
+        android:id="@+id/endTimeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="End Time: 1:00 PM"
+        android:textColor="#DA70D6"
+        android:textSize="16sp" />
+
+    <!-- Display total distance -->
+    <TextView
+        android:id="@+id/distanceTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Distance: 5.0 km"
+        android:textColor="#DA70D6"
+        android:textSize="16sp" />
+
+</LinearLayout>

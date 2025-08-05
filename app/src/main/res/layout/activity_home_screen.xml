@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HomeScreenActivity">
+
+
+    <ImageButton
+        android:id="@+id/workout"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:contentDescription="Workout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/baseline_surfing_24" />
+
+
+    <ImageButton
+        android:id="@+id/btnExec"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="204dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:contentDescription="Fitness Exercises"
+        app:layout_constraintBottom_toTopOf="@+id/btntodoList"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/workout"
+        app:srcCompat="@drawable/baseline_downhill_skiing_24" />
+
+    <ImageButton
+        android:id="@+id/btntodoList"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="70dp"
+        android:layout_marginBottom="20dp"
+        android:contentDescription="Create Tasks"
+        app:layout_constraintBottom_toTopOf="@+id/settingsButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnExec"
+        app:srcCompat="@drawable/baseline_filter_9_plus_24" />
+
+    <ImageButton
+        android:id="@+id/settingsButton"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="60dp"
+        android:contentDescription="@string/settings_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btntodoList"
+        app:srcCompat="@drawable/settings" />
+
+    <ImageButton
+        android:id="@+id/idLocation"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="20dp"
+        android:contentDescription="@string/settings_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/settingsButton"
+        app:srcCompat="@drawable/baseline_location_on_24" />
+
+    <ImageButton
+        android:id="@+id/cycling"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="136dp"
+        android:layout_marginTop="20dp"
+        android:contentDescription="@string/settings_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/settings" />
+
+    <ImageButton
+        android:id="@+id/idExRoutine"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:contentDescription="Your Exercises"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/idLocation"
+        app:srcCompat="@drawable/baseline_playlist_add_24" />
+
+    <ImageButton
+        android:id="@+id/login"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="284dp"
+        android:layout_marginTop="10dp"
+        android:contentDescription="Login"
+        app:layout_constraintBottom_toTopOf="@+id/btnExec"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.6"
+        app:srcCompat="@drawable/baseline_person_4_24" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
