@@ -23,44 +23,32 @@ import androidx.lifecycle.lifecycleScope
 import com.example.fitnesstrackingmobileapp.data.FitnessActivity
 import com.example.fitnesstrackingmobileapp.data.FitnessActivityDao
 import com.example.fitnesstrackingmobileapp.data.FitnessDatabase
-import com.example.fitnesstrackingmobileapp.data.FitnessRepository
 import com.example.fitnesstrackingmobileapp.utils.NetworkUtils
 import com.google.android.gms.location.*
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlinx.coroutines.launch
 
-class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
+class CyclingActivity : AppCompatActivity() {
 
     companion object {
-        private const val TAG = "RunningActivity"
+        private const val TAG = "CyclingActivity"
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1001
         private const val UPDATE_INTERVAL = 1000L // 1 second
         private const val FASTEST_INTERVAL = 500L // 500ms
     }
 
     private lateinit var fitnessActivityDao: FitnessActivityDao
-    private lateinit var fitnessRepository: FitnessRepository
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
-    private var googleMap: GoogleMap? = null
 
     // UI Components
     private lateinit var chronometer: Chronometer
     private lateinit var distanceText: TextView
-    private lateinit var timeText: TextView
+    private lateinit var speedText: TextView
+    private lateinit var caloriesText: TextView
     private lateinit var startStopButton: Button
-    private lateinit var currentLocButton:
-            com.google.android.material.floatingactionbutton.FloatingActionButton
     private lateinit var toolbar: MaterialToolbar
 
     // Tracking variables
@@ -73,20 +61,16 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
     private var totalCalories = 0.0
     private var previousLocation: Location? = null
     private val locationList = mutableListOf<Location>()
-    private val polylineOptions = PolylineOptions()
-
-    // User ID (retrieved from login session)
     private var userId: String = "default_user"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_location)
+        setContentView(R.layout.activity_cycling)
 
         try {
             // Initialize database
             fitnessActivityDao = FitnessDatabase.getDatabase(this).fitnessActivityDao()
-            fitnessRepository = FitnessRepository(this)
 
             // Get user ID from session
             userId = UserSession.getUserId(this)
@@ -96,9 +80,6 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
 
             // Initialize UI
             initializeUI()
-
-            // Setup map
-            setupMap()
 
             // Setup location callback
             setupLocationCallback()
@@ -121,76 +102,44 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun initializeUI() {
         try {
-            Log.d(TAG, "Initializing UI components...")
-
             // Initialize UI components
             chronometer = findViewById(R.id.chronometer)
-            Log.d(TAG, "Chronometer found: ${chronometer != null}")
-
-            distanceText = findViewById(R.id.dTextView)
-            Log.d(TAG, "Distance text found: ${distanceText != null}")
-
-            timeText = findViewById(R.id.tTextView)
-            Log.d(TAG, "Time text found: ${timeText != null}")
-
+            distanceText = findViewById(R.id.distanceText)
+            speedText = findViewById(R.id.speedText)
+            caloriesText = findViewById(R.id.caloriesText)
             startStopButton = findViewById(R.id.startStopButton)
-            Log.d(TAG, "Start/Stop button found: ${startStopButton != null}")
-
-            currentLocButton = findViewById(R.id.currentLoc)
-            Log.d(TAG, "Current location button found: ${currentLocButton != null}")
-
             toolbar = findViewById(R.id.toolbar)
-            Log.d(TAG, "Toolbar found: ${toolbar != null}")
 
             // Setup toolbar with proper navigation
-            toolbar?.setNavigationOnClickListener {
+            toolbar.setNavigationOnClickListener {
                 Log.d(TAG, "Navigation clicked - finishing activity")
                 finish()
             }
 
             // Setup start/stop button with debug logging
-            startStopButton?.setOnClickListener {
+            startStopButton.setOnClickListener {
                 Log.d(TAG, "Start/Stop button clicked. Current tracking state: $isTracking")
                 try {
                     if (isTracking) {
-                        Log.d(TAG, "Stopping tracking...")
                         stopTracking()
                     } else {
-                        Log.d(TAG, "Starting tracking...")
                         startTracking()
                     }
                 } catch (e: Exception) {
                     Log.e(TAG, "Error in button click: ${e.message}")
-                    e.printStackTrace()
                     Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
 
-            // Setup current location button
-            currentLocButton?.setOnClickListener {
-                Log.d(TAG, "Current location button clicked")
-                moveToCurrentLocation()
-            }
-
             // Initialize text displays
             updateDistanceDisplay()
-            updateTimeDisplay()
+            updateSpeedDisplay()
+            updateCaloriesDisplay()
 
             Log.d(TAG, "UI initialized successfully")
         } catch (e: Exception) {
             Log.e(TAG, "Error initializing UI: ${e.message}")
-            e.printStackTrace()
             Toast.makeText(this, "Error setting up UI: ${e.message}", Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private fun setupMap() {
-        try {
-            val mapFragment =
-                    supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-            mapFragment.getMapAsync(this)
-        } catch (e: Exception) {
-            Log.e(TAG, "Error setting up map: ${e.message}")
         }
     }
 
@@ -240,36 +189,9 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
                 .show()
     }
 
-    override fun onMapReady(map: GoogleMap) {
-        try {
-            googleMap = map
-
-            // Enable my location button
-            if (ActivityCompat.checkSelfPermission(
-                            this,
-                            Manifest.permission.ACCESS_FINE_LOCATION
-                    ) == PackageManager.PERMISSION_GRANTED
-            ) {
-                googleMap?.isMyLocationEnabled = true
-
-                // Move to current location automatically
-                moveToCurrentLocation()
-            } else {
-                // Request permission if not granted
-                requestLocationPermission()
-            }
-
-            // Set initial camera position (you can set this to a default location)
-            val defaultLocation = LatLng(16.8661, 96.1951) // Yangon, Myanmar
-            googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 15f))
-        } catch (e: Exception) {
-            Log.e(TAG, "Error in onMapReady: ${e.message}")
-        }
-    }
-
     private fun startTracking() {
         try {
-            Log.d(TAG, "Attempting to start tracking...")
+            Log.d(TAG, "Attempting to start cycling tracking...")
 
             if (checkLocationPermission()) {
                 Log.d(TAG, "Location permission granted")
@@ -279,23 +201,24 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
 
                     isTracking = true
                     startTime = System.currentTimeMillis()
-                    Log.d(TAG, "Set start time: $startTime")
 
                     // Start chronometer
                     chronometer.base = SystemClock.elapsedRealtime()
                     chronometer.start()
-                    Log.d(TAG, "Chronometer started")
 
                     // Update button text
-                    startStopButton.text = "Stop Tracking"
-                    Log.d(TAG, "Button text updated to Stop Tracking")
+                    startStopButton.text = "Stop"
 
                     // Start location updates
                     startLocationUpdates()
 
-                    Toast.makeText(this, "Tracking started! GPS is active.", Toast.LENGTH_SHORT)
+                    Toast.makeText(
+                                    this,
+                                    "Cycling tracking started! GPS is active.",
+                                    Toast.LENGTH_SHORT
+                            )
                             .show()
-                    Log.d(TAG, "Started running tracking successfully")
+                    Log.d(TAG, "Started cycling tracking successfully")
                 } else {
                     Log.d(TAG, "GPS is disabled, showing dialog")
                     showGPSDialog()
@@ -306,7 +229,6 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error starting tracking: ${e.message}")
-            e.printStackTrace()
             Toast.makeText(this, "Error starting tracking: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
@@ -322,12 +244,12 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
             stopLocationUpdates()
 
             // Update button text
-            startStopButton.text = "Start Tracking"
+            startStopButton.text = "Start"
 
             // Save activity
             saveActivity()
 
-            Log.d(TAG, "Stopped running tracking")
+            Log.d(TAG, "Stopped cycling tracking")
         } catch (e: Exception) {
             Log.e(TAG, "Error stopping tracking: ${e.message}")
             Toast.makeText(this, "Error stopping tracking: ${e.message}", Toast.LENGTH_LONG).show()
@@ -336,12 +258,9 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun updateLocation(location: Location) {
         try {
-            Log.d(TAG, "Updating location: ${location.latitude}, ${location.longitude}")
-
             if (previousLocation != null) {
                 val distance = previousLocation!!.distanceTo(location)
                 totalDistance += distance
-                Log.d(TAG, "Distance added: $distance meters, Total: $totalDistance meters")
 
                 // Calculate speed (m/s to km/h)
                 val timeDiff = (location.time - previousLocation!!.time) / 1000.0
@@ -350,106 +269,23 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
                     if (currentSpeed > maxSpeed) {
                         maxSpeed = currentSpeed
                     }
-                    Log.d(TAG, "Current speed: $currentSpeed km/h, Max speed: $maxSpeed km/h")
                 }
 
                 // Calculate calories (simplified formula)
                 val weight = 70.0 // kg - should be user's weight
                 val duration = (System.currentTimeMillis() - startTime) / 1000.0 / 3600.0 // hours
-                totalCalories = (weight * 10.0 * duration) // MET value for running
-                Log.d(TAG, "Calories calculated: $totalCalories")
+                totalCalories = (weight * 8.0 * duration) // MET value for cycling
 
                 // Update UI
                 updateDistanceDisplay()
-                updateTimeDisplay()
-
-                // Update map
-                updateMap(location)
-            } else {
-                Log.d(TAG, "First location update, setting previous location")
+                updateSpeedDisplay()
+                updateCaloriesDisplay()
             }
 
             previousLocation = location
             locationList.add(location)
-            Log.d(TAG, "Location list size: ${locationList.size}")
         } catch (e: Exception) {
             Log.e(TAG, "Error updating location: ${e.message}")
-            e.printStackTrace()
-        }
-    }
-
-    private fun updateMap(location: Location) {
-        try {
-            val latLng = LatLng(location.latitude, location.longitude)
-
-            // Add point to polyline
-            polylineOptions.add(latLng)
-
-            // Update polyline on map
-            googleMap?.clear()
-            googleMap?.addPolyline(polylineOptions)
-
-            // Add marker for current location
-            googleMap?.addMarker(MarkerOptions().position(latLng).title("Current Location"))
-        } catch (e: Exception) {
-            Log.e(TAG, "Error updating map: ${e.message}")
-        }
-    }
-
-    private fun moveToCurrentLocation() {
-        try {
-            Log.d(TAG, "Moving to current location...")
-
-            if (ActivityCompat.checkSelfPermission(
-                            this,
-                            Manifest.permission.ACCESS_FINE_LOCATION
-                    ) == PackageManager.PERMISSION_GRANTED
-            ) {
-                fusedLocationClient.lastLocation
-                        .addOnSuccessListener { location ->
-                            location?.let {
-                                val latLng = LatLng(it.latitude, it.longitude)
-                                googleMap?.animateCamera(
-                                        CameraUpdateFactory.newLatLngZoom(latLng, 15f)
-                                )
-                                Log.d(
-                                        TAG,
-                                        "Moved to current location: ${it.latitude}, ${it.longitude}"
-                                )
-                                Toast.makeText(
-                                                this,
-                                                "Moved to your current location",
-                                                Toast.LENGTH_SHORT
-                                        )
-                                        .show()
-                            }
-                                    ?: run {
-                                        Log.d(TAG, "No last location available")
-                                        Toast.makeText(
-                                                        this,
-                                                        "Location not available. Please enable GPS.",
-                                                        Toast.LENGTH_SHORT
-                                                )
-                                                .show()
-                                    }
-                        }
-                        .addOnFailureListener { exception ->
-                            Log.e(TAG, "Error getting last location: ${exception.message}")
-                            Toast.makeText(
-                                            this,
-                                            "Error getting location: ${exception.message}",
-                                            Toast.LENGTH_SHORT
-                                    )
-                                    .show()
-                        }
-            } else {
-                Log.d(TAG, "Location permission not granted")
-                requestLocationPermission()
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "Error moving to current location: ${e.message}")
-            Toast.makeText(this, "Error moving to location: ${e.message}", Toast.LENGTH_SHORT)
-                    .show()
         }
     }
 
@@ -462,22 +298,24 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun updateTimeDisplay() {
+    private fun updateSpeedDisplay() {
         try {
-            val elapsedTime = SystemClock.elapsedRealtime() - chronometer.base
-            val hours = (elapsedTime / 3600000).toInt()
-            val minutes = ((elapsedTime % 3600000) / 60000).toInt()
-            val seconds = ((elapsedTime % 60000) / 1000).toInt()
-            timeText.text = "%02d:%02d:%02d".format(hours, minutes, seconds)
+            speedText.text = "%.1f km/h".format(currentSpeed)
         } catch (e: Exception) {
-            Log.e(TAG, "Error updating time display: ${e.message}")
+            Log.e(TAG, "Error updating speed display: ${e.message}")
+        }
+    }
+
+    private fun updateCaloriesDisplay() {
+        try {
+            caloriesText.text = "%.0f cal".format(totalCalories)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error updating calories display: ${e.message}")
         }
     }
 
     private fun startLocationUpdates() {
         try {
-            Log.d(TAG, "Starting location updates...")
-
             val locationRequest =
                     LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, UPDATE_INTERVAL)
                             .setMinUpdateIntervalMillis(FASTEST_INTERVAL)
@@ -493,19 +331,9 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
                         locationCallback,
                         mainLooper
                 )
-                Log.d(TAG, "Location updates started successfully")
-            } else {
-                Log.e(TAG, "Location permission not granted for updates")
-                Toast.makeText(this, "Location permission required", Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error starting location updates: ${e.message}")
-            Toast.makeText(
-                            this,
-                            "Error starting location updates: ${e.message}",
-                            Toast.LENGTH_SHORT
-                    )
-                    .show()
         }
     }
 
@@ -534,9 +362,9 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
                 val activity =
                         FitnessActivity(
                                 userId = userId,
-                                activityType = "RUNNING",
+                                activityType = "CYCLING",
                                 title =
-                                        "Running - ${SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(Date())}",
+                                        "Cycling - ${SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(Date())}",
                                 startTime = startTime,
                                 endTime = System.currentTimeMillis(),
                                 durationSeconds = duration,
@@ -548,57 +376,38 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
                                         locationList.joinToString(",") {
                                             "${it.latitude},${it.longitude}"
                                         },
-                                notes = "Running session completed"
+                                notes = "Cycling session completed"
                         )
 
-                Log.d(TAG, "Saving running activity: ${activity.title}")
-
-                if (!NetworkUtils.isNetworkAvailable(this@RunningActivity)) {
-                    // Use repository to save with offline-first approach
-                    val result = fitnessRepository.saveActivity(activity)
-
-                    result.fold(
-                            onSuccess = { localId ->
-                                Log.d(TAG, "Activity saved successfully with local ID: $localId")
-                                loadingDialog.dismiss()
-
-                                // Show success message
-                                Toast.makeText(
-                                                this@RunningActivity,
-                                                "Activity saved successfully!",
-                                                Toast.LENGTH_SHORT
-                                        )
-                                        .show()
-
-                                // Navigate back to home screen
-                                val intent =
-                                        Intent(this@RunningActivity, HomeScreenActivity::class.java)
-                                intent.flags =
-                                        Intent.FLAG_ACTIVITY_CLEAR_TOP or
-                                                Intent.FLAG_ACTIVITY_NEW_TASK
-                                startActivity(intent)
-                                finish()
-                            },
-                            onFailure = { exception ->
-                                Log.e(TAG, "Error saving activity: ${exception.message}")
-                                loadingDialog.dismiss()
-                                Toast.makeText(
-                                                this@RunningActivity,
-                                                "Error saving activity: ${exception.message}",
-                                                Toast.LENGTH_SHORT
-                                        )
-                                        .show()
-                            }
+                // Network connection ရှိ/မရှိ စစ်ဆေးပြီး save method ကိုခွဲသုံးသည်။
+                if (!NetworkUtils.isNetworkAvailable(this@CyclingActivity)) {
+                    // အင်တာနက်မရှိလျှင် local database သို့သာသိမ်းဆည်းမည်။
+                    fitnessActivityDao.insertActivity(activity)
+                    Log.d(
+                            TAG,
+                            "No internet connection. Saved cycling activity to local database: ${activity.title}"
                     )
+                    loadingDialog.dismiss()
+                    Toast.makeText(
+                                    this@CyclingActivity,
+                                    "No internet connection. Activity saved locally.",
+                                    Toast.LENGTH_SHORT
+                            )
+                            .show()
+                    // Home screen သို့ ပြန်ပို့ရန်
+                    val intent = Intent(this@CyclingActivity, HomeScreenActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(intent)
+                    finish()
                 } else {
                     // အင်တာနက်ရှိလျှင် server သို့သိမ်းဆည်းမည်။
                     saveActivityToServer(activity, loadingDialog)
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Error saving running activity: ${e.message}")
+                Log.e(TAG, "Error saving cycling activity: ${e.message}")
                 loadingDialog.dismiss()
                 Toast.makeText(
-                                this@RunningActivity,
+                                this@CyclingActivity,
                                 "Error saving activity: ${e.message}",
                                 Toast.LENGTH_SHORT
                         )
@@ -618,14 +427,14 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
 
                         // Show success message
                         Toast.makeText(
-                                        this@RunningActivity,
+                                        this@CyclingActivity,
                                         "Activity saved successfully!",
                                         Toast.LENGTH_SHORT
                                 )
                                 .show()
 
                         // Navigate back to home screen
-                        val intent = Intent(this@RunningActivity, HomeScreenActivity::class.java)
+                        val intent = Intent(this@CyclingActivity, HomeScreenActivity::class.java)
                         intent.flags =
                                 Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
                         startActivity(intent)
@@ -647,14 +456,14 @@ class RunningActivity : AppCompatActivity(), OnMapReadyCallback {
                                     else -> "Server sync failed: $error"
                                 }
 
-                        Toast.makeText(this@RunningActivity, errorMessage, Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@CyclingActivity, errorMessage, Toast.LENGTH_LONG).show()
                     }
             )
         } catch (e: Exception) {
             Log.e(TAG, "Exception in saveActivityToServer: ${e.message}")
             loadingDialog.dismiss()
             Toast.makeText(
-                            this@RunningActivity,
+                            this@CyclingActivity,
                             "Error saving activity: ${e.message}",
                             Toast.LENGTH_LONG
                     )

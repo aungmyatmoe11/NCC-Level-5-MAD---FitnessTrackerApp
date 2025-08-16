@@ -74,6 +74,10 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.play.services.location)
     implementation(libs.places)
+    
+    // WorkManager for background tasks
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+    
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

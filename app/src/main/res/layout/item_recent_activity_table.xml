@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:padding="12dp"
+    android:gravity="center_vertical">
+
+    <!-- Activity Name and Type Column -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/activityNameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Morning Run"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?attr/colorOnSurface"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:letterSpacing="-0.01" />
+
+        <TextView
+            android:id="@+id/activityTypeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="RUNNING"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:layout_marginTop="2dp"
+            android:letterSpacing="-0.01" />
+
+    </LinearLayout>
+
+    <!-- Duration Column -->
+    <TextView
+        android:id="@+id/durationText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="25:30"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorOnSurface"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:letterSpacing="-0.01" />
+
+    <!-- Distance Column -->
+    <TextView
+        android:id="@+id/distanceText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="5.20 km"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorOnSurface"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:letterSpacing="-0.01" />
+
+    <!-- Calories Column -->
+    <TextView
+        android:id="@+id/caloriesText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="320"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorOnSurface"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:letterSpacing="-0.01" />
+
+</LinearLayout> 

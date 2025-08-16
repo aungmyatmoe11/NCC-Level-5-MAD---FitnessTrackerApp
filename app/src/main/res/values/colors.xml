@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Material Design 3 Color System -->
+    <!-- Material Design 3 Standard Color System -->
     
-    <!-- Primary Colors -->
+    <!-- Primary Colors - Blue -->
     <color name="primary">#2196F3</color>
     <color name="primary_dark">#1976D2</color>
     <color name="primary_light">#64B5F6</color>
@@ -10,7 +10,7 @@
     <color name="primary_container">#E3F2FD</color>
     <color name="on_primary_container">#0D47A1</color>
     
-    <!-- Secondary Colors -->
+    <!-- Secondary Colors - Green -->
     <color name="secondary">#4CAF50</color>
     <color name="secondary_dark">#388E3C</color>
     <color name="secondary_light">#81C784</color>
@@ -18,7 +18,7 @@
     <color name="secondary_container">#E8F5E8</color>
     <color name="on_secondary_container">#1B5E20</color>
     
-    <!-- Tertiary Colors -->
+    <!-- Tertiary Colors - Purple -->
     <color name="tertiary">#9C27B0</color>
     <color name="tertiary_dark">#7B1FA2</color>
     <color name="tertiary_light">#CE93D8</color>
@@ -26,21 +26,23 @@
     <color name="tertiary_container">#F3E5F5</color>
     <color name="on_tertiary_container">#4A148C</color>
     
-    <!-- Background Colors -->
-    <color name="background">#FAFAFA</color>
+    <!-- Background Colors - Light Theme -->
+    <color name="background">#FFFFFF</color>
     <color name="on_background">#1C1B1F</color>
     <color name="surface">#FFFFFF</color>
     <color name="on_surface">#1C1B1F</color>
     <color name="surface_variant">#F5F5F5</color>
     <color name="on_surface_variant">#424242</color>
+    <color name="inverse_surface">#2F2F2F</color>
+    <color name="inverse_on_surface">#F5F5F5</color>
     
     <!-- Error Colors -->
-    <color name="error">#F44336</color>
-    <color name="error_dark">#D32F2F</color>
-    <color name="error_light">#EF5350</color>
+    <color name="error">#B3261E</color>
+    <color name="error_dark">#8C1D18</color>
+    <color name="error_light">#F2B8B5</color>
     <color name="on_error">#FFFFFF</color>
-    <color name="error_container">#FFEBEE</color>
-    <color name="on_error_container">#B71C1C</color>
+    <color name="error_container">#F9DEDC</color>
+    <color name="on_error_container">#410E0B</color>
     
     <!-- Success Colors -->
     <color name="success">#4CAF50</color>
@@ -58,7 +60,7 @@
     <color name="warning_container">#FFF3E0</color>
     <color name="on_warning_container">#E65100</color>
     
-    <!-- Neutral Colors -->
+    <!-- Neutral Colors - Standard Gray Scale -->
     <color name="neutral_50">#FAFAFA</color>
     <color name="neutral_100">#F5F5F5</color>
     <color name="neutral_200">#EEEEEE</color>
@@ -69,6 +71,10 @@
     <color name="neutral_700">#616161</color>
     <color name="neutral_800">#424242</color>
     <color name="neutral_900">#212121</color>
+    
+    <!-- Outline Colors -->
+    <color name="outline">#79747E</color>
+    <color name="outline_variant">#CAC4D0</color>
     
     <!-- Status Colors -->
     <color name="status_active">#4CAF50</color>
@@ -89,12 +95,4 @@
     <color name="colorPrimary">#2196F3</color>
     <color name="colorPrimaryDark">#1976D2</color>
     <color name="colorAccent">#4CAF50</color>
-    
-    <!-- Legacy Custom Colors -->
-    <color name="dark_blue_shade">#0D2162</color>
-    <color name="dark_blue_shade_2">#17388E</color>
-    <color name="light_blue_shade">#12B2E6</color>
-    <color name="black_shade_1">#0e2433</color>
-    <color name="black_shade_2">#1C4966</color>
-    <color name="black_shade_3">#22252D</color>
 </resources>

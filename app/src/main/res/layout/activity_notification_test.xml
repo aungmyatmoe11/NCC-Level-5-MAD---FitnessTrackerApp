@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="?attr/colorSurface">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Notification Testing"
+        android:textAppearance="?attr/textAppearanceHeadlineMedium"
+        android:textColor="?attr/colorOnSurface"
+        android:gravity="center"
+        android:layout_marginBottom="32dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Test different types of notifications to ensure they work properly. Make sure you have granted notification permissions."
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:gravity="center"
+        android:layout_marginBottom="32dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnTestActivityReminder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Test Activity Reminder"
+        android:layout_marginBottom="16dp"
+        app:icon="@drawable/baseline_directions_run_24"
+        app:iconGravity="textStart"
+        style="@style/Widget.Material3.Button" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnTestMilestone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Test Milestone Notification"
+        android:layout_marginBottom="16dp"
+        app:icon="@drawable/baseline_local_fire_department_24"
+        app:iconGravity="textStart"
+        style="@style/Widget.Material3.Button" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnTestSyncStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Test Sync Status"
+        android:layout_marginBottom="16dp"
+        app:icon="@drawable/baseline_save_alt_24"
+        app:iconGravity="textStart"
+        style="@style/Widget.Material3.Button" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnTestGoalAchievement"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Test Goal Achievement"
+        android:layout_marginBottom="16dp"
+        app:icon="@drawable/baseline_fitness_center_24"
+        app:iconGravity="textStart"
+        style="@style/Widget.Material3.Button" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnTestAllNotifications"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Test All Notifications"
+        android:layout_marginBottom="16dp"
+        app:icon="@drawable/baseline_notifications_24"
+        app:iconGravity="textStart"
+        style="@style/Widget.Material3.Button.OutlinedButton" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Note: Check your notification panel to see the test notifications. Make sure notification permissions are granted in app settings."
+        android:textAppearance="?attr/textAppearanceBodySmall"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:gravity="center"
+        android:layout_marginTop="32dp"
+        android:padding="16dp"
+        android:background="?attr/colorSurfaceVariant"
+        app:cornerRadius="8dp" />
+
+</LinearLayout> 

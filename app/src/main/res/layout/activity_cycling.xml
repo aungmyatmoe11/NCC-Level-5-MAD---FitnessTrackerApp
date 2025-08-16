@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:attr/colorBackground"
-    tools:context=".RunningActivity">
+    tools:context=".CyclingActivity">
 
     <!-- App Bar -->
     <com.google.android.material.appbar.AppBarLayout
@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:theme="@style/ThemeOverlay.Material3.Dark.ActionBar"
-            app:title="Running Tracker"
+            app:title="Cycling Tracker"
             app:titleTextColor="?attr/colorOnPrimary"
             app:navigationIcon="@drawable/baseline_arrow_back_24"
             app:navigationIconTint="?attr/colorOnPrimary" />
@@ -38,35 +38,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
-
-            <!-- Map Fragment -->
-            <fragment
-                android:id="@+id/map"
-                android:name="com.google.android.gms.maps.SupportMapFragment"
-                android:layout_width="match_parent"
-                android:layout_height="400dp"
-                android:layout_marginBottom="16dp"
-                tools:context=".RunningActivity" />
-
-            <!-- Current Location Button -->
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/currentLoc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
-                android:contentDescription="Current Location"
-                app:srcCompat="@drawable/baseline_location_on_24" />
+            android:padding="24dp">
 
             <!-- Timer Section -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="4dp"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="8dp"
                 app:cardBackgroundColor="?attr/colorPrimaryContainer">
 
                 <LinearLayout
@@ -74,7 +54,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:padding="20dp">
+                    android:padding="32dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -87,8 +67,8 @@
                         android:id="@+id/chronometer"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:textAppearance="?attr/textAppearanceHeadlineMedium"
+                        android:layout_marginTop="16dp"
+                        android:textAppearance="?attr/textAppearanceDisplaySmall"
                         android:textColor="?attr/colorOnPrimaryContainer"
                         android:textStyle="bold" />
 
@@ -96,26 +76,26 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Stats Section -->
+            <!-- Stats Grid -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="24dp"
                 android:orientation="horizontal">
 
                 <!-- Distance Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
+                    android:layout_height="120dp"
+                    android:layout_marginEnd="12dp"
                     android:layout_weight="1"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="2dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp"
                     app:cardBackgroundColor="?attr/colorSurface">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:gravity="center"
                         android:orientation="vertical"
                         android:padding="16dp">
@@ -128,12 +108,12 @@
                             android:textColor="?attr/colorOnSurfaceVariant" />
 
                         <TextView
-                            android:id="@+id/dTextView"
+                            android:id="@+id/distanceText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="8dp"
                             android:text="0.00 km"
-                            android:textAppearance="?attr/textAppearanceTitleMedium"
+                            android:textAppearance="?attr/textAppearanceHeadlineSmall"
                             android:textColor="?attr/colorPrimary"
                             android:textStyle="bold" />
 
@@ -141,19 +121,19 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Time Card -->
+                <!-- Speed Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_height="120dp"
+                    android:layout_marginStart="12dp"
                     android:layout_weight="1"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="2dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp"
                     app:cardBackgroundColor="?attr/colorSurface">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:gravity="center"
                         android:orientation="vertical"
                         android:padding="16dp">
@@ -161,17 +141,17 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Time"
+                            android:text="Speed"
                             android:textAppearance="?attr/textAppearanceLabelMedium"
                             android:textColor="?attr/colorOnSurfaceVariant" />
 
                         <TextView
-                            android:id="@+id/tTextView"
+                            android:id="@+id/speedText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="00:00:00"
-                            android:textAppearance="?attr/textAppearanceTitleMedium"
+                            android:layout_marginTop="8dp"
+                            android:text="0.0 km/h"
+                            android:textAppearance="?attr/textAppearanceHeadlineSmall"
                             android:textColor="?attr/colorSecondary"
                             android:textStyle="bold" />
 
@@ -180,6 +160,43 @@
                 </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>
+
+            <!-- Calories Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="?attr/colorSurface">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Calories Burned"
+                        android:textAppearance="?attr/textAppearanceLabelLarge"
+                        android:textColor="?attr/colorOnSurfaceVariant" />
+
+                    <TextView
+                        android:id="@+id/caloriesText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="0 cal"
+                        android:textAppearance="?attr/textAppearanceHeadlineMedium"
+                        android:textColor="?attr/colorTertiary"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- Control Buttons -->
             <LinearLayout
@@ -192,10 +209,10 @@
                     android:id="@+id/startStopButton"
                     android:layout_width="match_parent"
                     android:layout_height="64dp"
-                    android:text="Start Tracking"
+                    android:text="Start Cycling"
                     android:textAppearance="?attr/textAppearanceLabelLarge"
                     app:cornerRadius="16dp"
-                    app:icon="@drawable/baseline_directions_run_24"
+                    app:icon="@drawable/baseline_surfing_24"
                     app:iconGravity="textStart" />
 
                 <!-- Info Text -->
@@ -220,4 +237,4 @@
 
     </androidx.core.widget.NestedScrollView>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout> 

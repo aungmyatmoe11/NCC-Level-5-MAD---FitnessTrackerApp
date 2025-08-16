@@ -2,13 +2,31 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Network Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    
+    <!-- Location Permissions -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    
+    <!-- Activity Recognition -->
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+    
+    <!-- Notification Permissions -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    
+    <!-- Background Processing -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    
+    <!-- Battery Optimization -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
     <application
-        android:name=".VolleySingleton"
+        android:name=".FitnessTrackerApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -20,43 +38,24 @@
         android:theme="@style/Theme.FitnessTrackingApp"
         tools:targetApi="31">
         
-        <!-- Test Login Activity for debugging -->
-        <activity
-            android:name=".TestLoginActivity"
-            android:exported="true"
-            android:label="Fitness Tracker - Test"
-            android:theme="@style/Theme.FitnessTrackingApp">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        
-        <activity
-            android:name=".UserProfileFragment"
-            android:exported="false"
-            tools:ignore="Instantiatable"></activity>
-        <activity
-            android:name=".WalkingTrackerActivity"
-            android:exported="false"></activity>
         <activity
             android:name=".HomeScreenActivity"
             android:exported="false"></activity>
         <activity
-            android:name=".compose.WorkoutActivity"
-            android:exported="false" />
-        <activity
             android:name=".RunningActivity"
             android:exported="false"></activity>
         <activity
-            android:name=".ViewUsersActivity"
+            android:name=".CyclingActivity"
             android:exported="false" />
-        <activity
-            android:name=".AddEditExecActivity"
+        <activity 
+            android:name=".WeightliftingActivity"
             android:exported="false" />
-        <activity
-            android:name=".ExerciseActivity"
-            android:exported="true"></activity>
+        <activity 
+            android:name=".ActivityHistoryActivity"
+            android:exported="false" />
+        <activity 
+            android:name=".NotificationTestActivity"
+            android:exported="false" />
         <activity android:name=".RegisterActivity"
             android:exported="false" />
         <activity
@@ -64,7 +63,23 @@
             android:exported="true"
             android:label="Fitness Tracker"
             android:theme="@style/Theme.FitnessTrackingApp">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
+
+        <!-- WorkManager Provider -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

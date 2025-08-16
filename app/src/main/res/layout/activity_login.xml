@@ -156,11 +156,11 @@
                         android:layout_marginTop="12dp"
                         android:padding="16dp"
                         android:text="@string/create_account"
-                        android:textColor="@android:color/black"
                         android:textAppearance="?attr/textAppearanceLabelLarge"
                         app:backgroundTint="?attr/colorSecondary"
                         app:cornerRadius="12dp"
-                        style="@style/Widget.Material3.Button.OutlinedButton" />
+                        app:icon="@drawable/baseline_arrow_forward_24"
+                        app:iconGravity="end" />
 
                 </LinearLayout>
 

@@ -6,4 +6,6 @@ object EndPoints {
     val URL_ADD_USER = URL_ROOT + "adduser"
     val URL_GET_USERS = URL_ROOT + "getusers"
     val URL_LOGIN_USER = URL_ROOT + "loginuser"
+    val URL_GET_ACTIVITIES = URL_ROOT + "getactivities"
+    val URL_SAVE_ACTIVITY = URL_ROOT + "saveactivity"
 }
