@@ -3,6 +3,8 @@ package com.example.fitnesstrackingmobileapp
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -46,6 +48,7 @@ class WeightliftingActivity : AppCompatActivity() {
     private lateinit var totalExercisesText: TextView
     private lateinit var totalVolumeText: TextView
     private lateinit var toolbar: MaterialToolbar
+    private lateinit var networkStatusMenuItem: MenuItem
 
     // Tracking variables
     private var workoutStartTime = 0L
@@ -53,6 +56,7 @@ class WeightliftingActivity : AppCompatActivity() {
     private var totalCalories = 0.0
     private var userId: String = "default_user"
     private var isSaving = false // Prevent duplicate saves
+    private var isActivityDestroyed = false // Track activity state
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +69,14 @@ class WeightliftingActivity : AppCompatActivity() {
         // Get user ID from session
         userId = UserSession.getUserId(this)
 
+        // Ensure user ID is not empty
+        if (userId.isBlank()) {
+            Log.w(TAG, "User ID is empty, using default")
+            userId = "default_user"
+        }
+
+        Log.d(TAG, "Using user ID: $userId")
+
         // Initialize UI
         initializeUI()
 
@@ -76,6 +88,35 @@ class WeightliftingActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+    }
+
+    // Network status functionality
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.weightlifting_toolbar_menu, menu)
+        networkStatusMenuItem = menu.findItem(R.id.network_status)
+        updateNetworkStatus()
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun updateNetworkStatus() {
+        if (::networkStatusMenuItem.isInitialized) {
+            val isOnline = NetworkUtils.isNetworkAvailable(this)
+            val iconRes =
+                    if (isOnline) R.drawable.baseline_wifi_24 else R.drawable.baseline_wifi_off_24
+            networkStatusMenuItem.setIcon(iconRes)
+
+            Log.d(TAG, "Network status updated: ${if (isOnline) "Online" else "Offline"}")
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        isActivityDestroyed = true
+        Log.d(TAG, "WeightliftingActivity destroyed")
     }
 
     private fun initializeUI() {
@@ -169,6 +210,9 @@ class WeightliftingActivity : AppCompatActivity() {
             exercisesAdapter.submitList(exercisesList.toList())
             updateStats()
 
+            // Update network status when adding exercises
+            updateNetworkStatus()
+
             // Clear inputs
             exerciseNameInput.text?.clear()
             setsInput.text?.clear()
@@ -207,9 +251,9 @@ class WeightliftingActivity : AppCompatActivity() {
             return
         }
 
-        // Prevent duplicate saves
-        if (isSaving) {
-            Log.d(TAG, "Already saving workout, ignoring duplicate request")
+        // Prevent duplicate saves and check activity state
+        if (isSaving || isActivityDestroyed) {
+            Log.d(TAG, "Already saving workout or activity destroyed, ignoring request")
             return
         }
 
@@ -226,44 +270,98 @@ class WeightliftingActivity : AppCompatActivity() {
                                 activityType = "WEIGHTLIFTING",
                                 title =
                                         "Weightlifting - ${SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(Date())}",
+                                description =
+                                        "Weightlifting workout with ${exercisesList.size} exercises",
                                 startTime = workoutStartTime,
                                 endTime = System.currentTimeMillis(),
                                 durationSeconds = duration,
+                                distanceMeters = 0.0, // Weightlifting doesn't have distance
                                 caloriesBurned = totalCalories,
+                                averageHeartRate = 0, // Default for weightlifting
+                                maxHeartRate = 0, // Default for weightlifting
                                 averageSpeed =
                                         exercisesList.size.toDouble(), // exercises per session
-                                notes = "Total volume: ${totalVolume}kg"
+                                maxSpeed = exercisesList.size.toDouble(), // exercises per session
+                                elevationGain = 0.0, // Not applicable for weightlifting
+                                routeData = "", // Not applicable for weightlifting
+                                notes =
+                                        "Total volume: ${totalVolume}kg, Exercises: ${exercisesList.size}"
                         )
 
-                val loadingDialog =
-                        AlertDialog.Builder(this@WeightliftingActivity)
-                                .setView(R.layout.loading_dialog)
-                                .setCancelable(false)
-                                .create()
-                loadingDialog.show()
-
+                // Check network availability first
                 if (!NetworkUtils.isNetworkAvailable(this@WeightliftingActivity)) {
+                    // အင်တာနက်မရှိလျှင် local database သို့သာသိမ်းဆည်းမည်။
+                    Log.d(TAG, "No internet connection - saving to local database only")
 
+                    val loadingDialog =
+                            AlertDialog.Builder(this@WeightliftingActivity)
+                                    .setView(R.layout.loading_dialog)
+                                    .setCancelable(false)
+                                    .create()
+                    loadingDialog.show()
+
+                    // Save to local database
                     val activityId = fitnessActivityDao.insertActivity(activity)
 
-                    // Save individual exercises
+                    // Save individual exercises to local database
                     exercisesList.forEach { exercise ->
                         val sessionWithActivityId = exercise.copy(activityId = activityId.toInt())
                         fitnessActivityDao.insertWeightliftingSession(sessionWithActivityId)
                     }
 
-                    // Save to server via API with loading dialog
-
-                    Log.d(TAG, "Saving to server with ${exercisesList.size} exercises:")
+                    Log.d(TAG, "Saved to local database with ${exercisesList.size} exercises:")
                     exercisesList.forEach { exercise ->
                         Log.d(
                                 TAG,
                                 "  - ${exercise.exerciseName}: ${exercise.sets} sets, ${exercise.reps} reps, ${exercise.weightKg}kg"
                         )
                     }
+
+                    Log.d(
+                            TAG,
+                            "No internet connection. Saved weightlifting activity to local database: ${activity.title}"
+                    )
                     loadingDialog.dismiss()
+                    Toast.makeText(
+                                    this@WeightliftingActivity,
+                                    "No internet connection. Activity saved locally.",
+                                    Toast.LENGTH_SHORT
+                            )
+                            .show()
+                    // Home screen သို့ ပြန်ပို့ရန်
+                    val intent = Intent(this@WeightliftingActivity, HomeScreenActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(intent)
+                    finish()
                 } else {
                     // အင်တာနက်ရှိလျှင် server သို့သိမ်းဆည်းမည်။
+                    Log.d(TAG, "Internet connection available - saving to server")
+
+                    val loadingDialog =
+                            AlertDialog.Builder(this@WeightliftingActivity)
+                                    .setView(R.layout.loading_dialog)
+                                    .setCancelable(false)
+                                    .create()
+                    loadingDialog.show()
+
+                    // Save to local database first (for backup)
+                    val activityId = fitnessActivityDao.insertActivity(activity)
+
+                    // Save individual exercises to local database
+                    exercisesList.forEach { exercise ->
+                        val sessionWithActivityId = exercise.copy(activityId = activityId.toInt())
+                        fitnessActivityDao.insertWeightliftingSession(sessionWithActivityId)
+                    }
+
+                    Log.d(TAG, "Saved to local database with ${exercisesList.size} exercises:")
+                    exercisesList.forEach { exercise ->
+                        Log.d(
+                                TAG,
+                                "  - ${exercise.exerciseName}: ${exercise.sets} sets, ${exercise.reps} reps, ${exercise.weightKg}kg"
+                        )
+                    }
+
+                    // Then save to server
                     saveActivityToServer(activity, exercisesList, loadingDialog)
                 }
 
@@ -300,13 +398,34 @@ class WeightliftingActivity : AppCompatActivity() {
                                 )
                                 .show()
 
-                        // Navigate back to home screen
-                        val intent =
-                                Intent(this@WeightliftingActivity, HomeScreenActivity::class.java)
-                        intent.flags =
-                                Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-                        startActivity(intent)
-                        finish()
+                        // Navigate back to home screen safely
+                        try {
+                            val intent =
+                                    Intent(
+                                            this@WeightliftingActivity,
+                                            HomeScreenActivity::class.java
+                                    )
+                            intent.flags =
+                                    Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                            startActivity(intent)
+
+                            // Delay finish to allow transition to complete
+                            android.os.Handler(android.os.Looper.getMainLooper())
+                                    .postDelayed(
+                                            {
+                                                if (!isFinishing && !isDestroyed) {
+                                                    finish()
+                                                }
+                                            },
+                                            500
+                                    )
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Error navigating to home screen: ${e.message}")
+                            // Fallback: just finish the activity
+                            if (!isFinishing && !isDestroyed) {
+                                finish()
+                            }
+                        }
                     },
                     onError = { error ->
                         Log.e(TAG, "Error saving to server: $error")

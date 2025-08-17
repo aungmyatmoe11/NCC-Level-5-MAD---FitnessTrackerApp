@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.provider.Settings
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.Chronometer
 import android.widget.TextView
@@ -50,6 +52,7 @@ class CyclingActivity : AppCompatActivity() {
     private lateinit var caloriesText: TextView
     private lateinit var startStopButton: Button
     private lateinit var toolbar: MaterialToolbar
+    private lateinit var networkStatusMenuItem: MenuItem
 
     // Tracking variables
     private var isTracking = false
@@ -97,6 +100,29 @@ class CyclingActivity : AppCompatActivity() {
             Toast.makeText(this, "Error initializing activity: ${e.message}", Toast.LENGTH_LONG)
                     .show()
             finish()
+        }
+    }
+
+    // Network status functionality
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.cycling_toolbar_menu, menu)
+        networkStatusMenuItem = menu.findItem(R.id.network_status)
+        updateNetworkStatus()
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun updateNetworkStatus() {
+        if (::networkStatusMenuItem.isInitialized) {
+            val isOnline = NetworkUtils.isNetworkAvailable(this)
+            val iconRes =
+                    if (isOnline) R.drawable.baseline_wifi_24 else R.drawable.baseline_wifi_off_24
+            networkStatusMenuItem.setIcon(iconRes)
+
+            Log.d(TAG, "Network status updated: ${if (isOnline) "Online" else "Offline"}")
         }
     }
 
@@ -148,6 +174,10 @@ class CyclingActivity : AppCompatActivity() {
                 object : LocationCallback() {
                     override fun onLocationResult(locationResult: LocationResult) {
                         locationResult.lastLocation?.let { location -> updateLocation(location) }
+                        // Update network status periodically during tracking
+                        if (isTracking) {
+                            updateNetworkStatus()
+                        }
                     }
                 }
     }

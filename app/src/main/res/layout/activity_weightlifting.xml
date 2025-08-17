@@ -19,10 +19,11 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:theme="@style/ThemeOverlay.Material3.Dark.ActionBar"
-            app:title="Weightlifting Tracker"
+            app:title="Weightlifting Track"
             app:titleTextColor="?attr/colorOnPrimary"
             app:navigationIcon="@drawable/baseline_arrow_back_24"
-            app:navigationIconTint="?attr/colorOnPrimary" />
+            app:navigationIconTint="?attr/colorOnPrimary"
+            app:menu="@menu/weightlifting_toolbar_menu" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -67,6 +68,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:hint="Exercise Name"
+                        android:letterSpacing="0.1"
                         app:cornerRadius="12dp">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -74,6 +76,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="text"
+                            android:letterSpacing="0.1"
                             android:maxLines="1" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -92,6 +95,7 @@
                             android:layout_marginEnd="8dp"
                             android:layout_weight="1"
                             android:hint="Sets"
+                            android:letterSpacing="0.1"
                             app:cornerRadius="12dp">
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -99,6 +103,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:inputType="number"
+                                android:letterSpacing="0.1"
                                 android:maxLines="1" />
 
                         </com.google.android.material.textfield.TextInputLayout>
@@ -111,6 +116,7 @@
                             android:layout_marginEnd="4dp"
                             android:layout_weight="1"
                             android:hint="Reps"
+                            android:letterSpacing="0.1"
                             app:cornerRadius="12dp">
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -118,6 +124,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:inputType="number"
+                                android:letterSpacing="0.1"
                                 android:maxLines="1" />
 
                         </com.google.android.material.textfield.TextInputLayout>
@@ -129,6 +136,7 @@
                             android:layout_marginStart="8dp"
                             android:layout_weight="1"
                             android:hint="Weight (kg)"
+                            android:letterSpacing="0.1"
                             app:cornerRadius="12dp">
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -136,6 +144,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:inputType="numberDecimal"
+                                android:letterSpacing="0.1"
                                 android:maxLines="1" />
 
                         </com.google.android.material.textfield.TextInputLayout>

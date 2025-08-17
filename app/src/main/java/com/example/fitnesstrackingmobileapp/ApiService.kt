@@ -42,12 +42,13 @@ class ApiService(private val context: Context) {
                 }
 
                 try {
+                        // Ensure all required fields are present and have proper values
                         val jsonObject =
                                 JSONObject().apply {
                                         put("user_id", activity.userId)
                                         put("activity_type", activity.activityType)
                                         put("title", activity.title)
-                                        put("description", activity.description)
+                                        put("description", activity.description ?: "")
                                         put("start_time", activity.startTime)
                                         put("end_time", activity.endTime)
                                         put("duration_seconds", activity.durationSeconds)
@@ -58,9 +59,30 @@ class ApiService(private val context: Context) {
                                         put("average_speed", activity.averageSpeed)
                                         put("max_speed", activity.maxSpeed)
                                         put("elevation_gain", activity.elevationGain)
-                                        put("route_data", activity.routeData)
-                                        put("notes", activity.notes)
+                                        put("route_data", activity.routeData ?: "")
+                                        put("notes", activity.notes ?: "")
                                 }
+
+                        // Validate required fields before sending
+                        val requiredFields =
+                                listOf(
+                                        "user_id",
+                                        "activity_type",
+                                        "title",
+                                        "start_time",
+                                        "end_time",
+                                        "duration_seconds",
+                                        "distance_meters",
+                                        "calories_burned",
+                                        "average_speed",
+                                        "max_speed"
+                                )
+
+                        requiredFields.forEach { field ->
+                                if (!jsonObject.has(field) || jsonObject.isNull(field)) {
+                                        throw Exception("Missing required field: $field")
+                                }
+                        }
 
                         // Add exercises for weightlifting activities
                         if (activity.activityType == "WEIGHTLIFTING" && exercises != null) {
@@ -70,13 +92,29 @@ class ApiService(private val context: Context) {
                                 )
                                 val exercisesArray = org.json.JSONArray()
                                 exercises.forEach { exercise ->
+                                        // Validate exercise data according to PHP requirements
+                                        if (exercise.exerciseName.isBlank() ||
+                                                        exercise.sets <= 0 ||
+                                                        exercise.reps <= 0 ||
+                                                        exercise.weightKg <= 0
+                                        ) {
+                                                Log.w(
+                                                        TAG,
+                                                        "Skipping invalid exercise: ${exercise.exerciseName}"
+                                                )
+                                                return@forEach
+                                        }
+
                                         Log.d(
                                                 TAG,
                                                 "Exercise: ${exercise.exerciseName} - ${exercise.sets} sets, ${exercise.reps} reps, ${exercise.weightKg}kg"
                                         )
                                         val exerciseObject =
                                                 JSONObject().apply {
-                                                        put("exercise_name", exercise.exerciseName)
+                                                        put(
+                                                                "exercise_name",
+                                                                exercise.exerciseName.trim()
+                                                        )
                                                         put("sets", exercise.sets)
                                                         put("reps", exercise.reps)
                                                         put("weight_kg", exercise.weightKg)
@@ -87,12 +125,25 @@ class ApiService(private val context: Context) {
                                                 }
                                         exercisesArray.put(exerciseObject)
                                 }
-                                jsonObject.put("exercises", exercisesArray)
-                                Log.d(TAG, "Exercises JSON: ${exercisesArray.toString()}")
+
+                                // Only add exercises array if it's not empty
+                                if (exercisesArray.length() > 0) {
+                                        jsonObject.put("exercises", exercisesArray)
+                                        Log.d(TAG, "Exercises JSON: ${exercisesArray.toString()}")
+                                } else {
+                                        Log.w(TAG, "No valid exercises to send")
+                                }
+
                                 Log.d(TAG, "Full JSON object: ${jsonObject.toString()}")
                         }
 
                         Log.d(TAG, "Sending activity data: ${jsonObject.toString()}")
+                        Log.d(TAG, "Activity type: ${activity.activityType}")
+                        Log.d(TAG, "User ID: ${activity.userId}")
+                        Log.d(TAG, "Duration: ${activity.durationSeconds} seconds")
+                        Log.d(TAG, "Calories: ${activity.caloriesBurned}")
+                        Log.d(TAG, "Average speed: ${activity.averageSpeed}")
+                        Log.d(TAG, "Max speed: ${activity.maxSpeed}")
                         val request =
                                 JsonObjectRequest(
                                         Request.Method.POST,
@@ -145,11 +196,44 @@ class ApiService(private val context: Context) {
                                                         TAG,
                                                         "Network error details: ${error.networkResponse?.statusCode}"
                                                 )
+
+                                                // Log response body for debugging
+                                                error.networkResponse?.data?.let { data ->
+                                                        val responseBody = String(data)
+                                                        Log.e(
+                                                                TAG,
+                                                                "Error response body: $responseBody"
+                                                        )
+                                                }
+
+                                                val errorMessage =
+                                                        when (error.networkResponse?.statusCode) {
+                                                                400 ->
+                                                                        "Bad request - Please check your data format"
+                                                                401 ->
+                                                                        "Unauthorized - Please login again"
+                                                                403 -> "Forbidden - Access denied"
+                                                                404 ->
+                                                                        "Not found - Server endpoint not available"
+                                                                500 ->
+                                                                        "Server error - Please try again later"
+                                                                else ->
+                                                                        "Network error: ${error.message}"
+                                                        }
+
                                                 synchronized(activeRequests) {
                                                         activeRequests.remove(requestId)
                                                 }
-                                                onError("Network error: ${error.message}")
+                                                onError(errorMessage)
                                         }
+                                )
+
+                        // Set timeout and retry policy
+                        request.retryPolicy =
+                                com.android.volley.DefaultRetryPolicy(
+                                        15000, // 15 seconds timeout
+                                        2, // 2 retries
+                                        1.0f // No backoff multiplier
                                 )
 
                         FitnessTrackerApplication.instance?.addToRequestQueue(request)

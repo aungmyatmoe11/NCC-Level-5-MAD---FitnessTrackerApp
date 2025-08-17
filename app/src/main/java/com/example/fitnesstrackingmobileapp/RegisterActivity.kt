@@ -5,6 +5,8 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.util.Log
 import android.util.Patterns
 import android.widget.Button
@@ -52,6 +54,9 @@ class RegisterActivity : AppCompatActivity() {
 
             // Set up email validation
             setupEmailValidation()
+
+            // Set up custom password toggle functionality
+            setupPasswordToggle()
 
             btnSubmit.setOnClickListener {
                 Log.d(TAG, "Register button clicked")
@@ -139,6 +144,58 @@ class RegisterActivity : AppCompatActivity() {
         )
     }
 
+    /**
+     * Password toggle လုပ်ဆောင်ချက်ကို setup လုပ်ခြင်း ပါဝါစ်ဝါဒ်ကိုြသခြင်း/ဖျောက်ထားခြင်း
+     * ပြောင်းလဲနိုင်စေရန်
+     */
+    private fun setupPasswordToggle() {
+        // Password toggle icon ကို click လုပ်တဲ့အခါ လုပ်ဆောင်မယ့် function
+        passwordLayout.setEndIconOnClickListener { togglePasswordVisibility() }
+
+        // Password field ကို စတင်တဲ့အခါ ဖျောက်ထားပြီးသား အနေအထားဖြင့် စတင်မည်
+        etPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+
+        // Initial password toggle icon ကို set လုပ်ခြင်း
+        restorePasswordToggleIcon()
+    }
+
+    /**
+     * Password toggle icon ကို ပြန်လည်ထိန်းထားခြင်း Validation error ဖြစ်နေစဉ် icon
+     * ပျောက်မသွားစေရန်
+     */
+    private fun restorePasswordToggleIcon() {
+        // Current password visibility state ကို စစ်ဆေးပြီး သင့်တော်သော icon ကို set လုပ်ခြင်း
+        val currentTransformation = etPassword.transformationMethod
+
+        if (currentTransformation is PasswordTransformationMethod) {
+            // Password ဖျောက်ထားနေပါက visibility off icon ကို set လုပ်ခြင်း
+            passwordLayout.endIconDrawable = getDrawable(R.drawable.baseline_visibility_off_24)
+        } else {
+            // Password ြသနေပါက visibility icon ကို set လုပ်ခြင်း
+            passwordLayout.endIconDrawable = getDrawable(R.drawable.baseline_visibility_24)
+        }
+    }
+
+    /** Password ကိုြသခြင်း/ဖျောက်ထားခြင်း ပြောင်းလဲခြင်း */
+    private fun togglePasswordVisibility() {
+        val currentTransformation = etPassword.transformationMethod
+
+        if (currentTransformation is PasswordTransformationMethod) {
+            // Password ကိုြသမည် (ဖျောက်ထားခြင်းမှြသခြင်းသို့ ပြောင်းလဲခြင်း)
+            etPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
+        } else {
+            // Password ကို ဖျောက်ထားမည် (ြသခြင်းမှ ဖျောက်ထားခြင်းသို့ ပြောင်းလဲခြင်း)
+            etPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+        }
+
+        // Password toggle icon ကို ပြန်လည်ထိန်းထားခြင်း
+        restorePasswordToggleIcon()
+
+        // Cursor position ကို ထိန်းထားရန်
+        val selection = etPassword.selectionEnd
+        etPassword.setSelection(selection)
+    }
+
     private fun validateEmail(email: String): Boolean {
         return when {
             email.isEmpty() -> {
@@ -213,30 +270,44 @@ class RegisterActivity : AppCompatActivity() {
         return when {
             password.isEmpty() -> {
                 passwordLayout.error = "Password is required"
+                // Password toggle icon ကို ထိန်းထားရန်
+                restorePasswordToggleIcon()
                 false
             }
             password.length < 6 -> {
                 passwordLayout.error = "Password must be at least 6 characters"
+                // Password toggle icon ကို ထိန်းထားရန်
+                restorePasswordToggleIcon()
                 false
             }
             password.length > 50 -> {
                 passwordLayout.error = "Password must be less than 50 characters"
+                // Password toggle icon ကို ထိန်းထားရန်
+                restorePasswordToggleIcon()
                 false
             }
             !password.matches(Regex(".*[A-Z].*")) -> {
                 passwordLayout.error = "Password must contain at least one uppercase letter"
+                // Password toggle icon ကို ထိန်းထားရန်
+                restorePasswordToggleIcon()
                 false
             }
             !password.matches(Regex(".*[a-z].*")) -> {
                 passwordLayout.error = "Password must contain at least one lowercase letter"
+                // Password toggle icon ကို ထိန်းထားရန်
+                restorePasswordToggleIcon()
                 false
             }
             !password.matches(Regex(".*\\d.*")) -> {
                 passwordLayout.error = "Password must contain at least one number"
+                // Password toggle icon ကို ထိန်းထားရန်
+                restorePasswordToggleIcon()
                 false
             }
             else -> {
                 passwordLayout.error = null
+                // Password toggle icon ကို ထိန်းထားရန်
+                restorePasswordToggleIcon()
                 true
             }
         }

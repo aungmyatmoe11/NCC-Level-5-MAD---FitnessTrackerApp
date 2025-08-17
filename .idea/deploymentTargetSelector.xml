@@ -4,7 +4,7 @@
     <selectionStates>
       <SelectionState runConfigName="Fitness_Tracking_Mobile_App">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-08-05T11:52:26.873803Z">
+        <DropdownSelection timestamp="2025-08-17T10:32:47.595806Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="PhysicalDevice" identifier="serial=13195704C9004362" />

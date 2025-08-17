@@ -253,11 +253,11 @@ class HomeScreenActivity : AppCompatActivity() {
 
             // You can also update the subtitle if needed
             val subtitleText = findViewById<TextView>(R.id.subtitleText)
-            if (userEmail.isNotEmpty()) {
-                subtitleText?.text = "Ready for your workout? ($userEmail)"
-            } else {
-                subtitleText?.text = "Ready for your workout?"
-            }
+            // if (userEmail.isNotEmpty()) {
+            // subtitleText?.text = "Ready for your workout? ($userEmail)"
+            // } else {
+            subtitleText?.text = "Ready for your workout?"
+            // }
         } catch (e: Exception) {
             Log.e(TAG, "Error updating welcome message: ${e.message}")
         }
